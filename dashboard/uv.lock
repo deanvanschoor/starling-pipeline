@@ -390,8 +390,8 @@ wheels = [
 
 [[package]]
 name = "dashboard"
-version = "0.1.0"
-source = { virtual = "." }
+version = "0.1.1"
+source = { editable = "." }
 dependencies = [
     { name = "duckdb" },
     { name = "pandas" },
@@ -404,7 +404,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "duckdb", specifier = ">=1.4.1" },
+    { name = "duckdb", specifier = "==1.4.1" },
     { name = "pandas", specifier = ">=2.3.3" },
     { name = "plotly", specifier = ">=6.4.0" },
     { name = "prefect", specifier = ">=3.6.2" },

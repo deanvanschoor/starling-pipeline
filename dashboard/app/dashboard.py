@@ -10,6 +10,7 @@ import logging
 
 from poll import poll_for_pipeline_run
 from constants import get_md_connection
+from app.utils.logging_config import setup_logging
 
 # ==============================================================================
 # CONFIGURATION
@@ -28,11 +29,7 @@ LOOKBACK_DAYS = 180
 # ==============================================================================
 load_dotenv()
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    force=True
-)
+setup_logging()
 log = logging.getLogger(__name__)
 
 # ==============================================================================
