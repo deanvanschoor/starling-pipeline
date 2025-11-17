@@ -1,0 +1,117 @@
+services:
+  prefect-server:
+    build:
+      context: ./orchestrator
+      dockerfile: dockerfile
+    container_name: prefect-server
+    command: uv run prefect server start --host 0.0.0.0
+    ports:
+      - "4200:4200"
+    volumes:
+      - prefect-data:/app/.prefect
+    env_file:
+      - .env
+    environment:
+      - PREFECT_SERVER_API_HOST=0.0.0.0
+      - PREFECT_HOME=/app/.prefect
+      - MD_TOKEN=${MD_TOKEN}
+      - ENVIRONMENT=${ENVIRONMENT:-dev}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4200/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s  # Give server time to start
+    networks:
+      - app-network
+
+  prefect-worker:
+    build:
+      context: ./orchestrator
+      dockerfile: dockerfile
+    container_name: prefect-worker
+    command: uv run prefect worker start --pool default-agent-pool --type process
+    volumes:
+      - prefect-data:/app/.prefect
+    env_file:
+      - .env
+    environment:
+      - PREFECT_API_URL=http://prefect-server:4200/api
+      - PREFECT_HOME=/app/.prefect
+      - MD_TOKEN=${MD_TOKEN}
+      - ENVIRONMENT=${ENVIRONMENT:-dev}
+    restart: unless-stopped
+    depends_on:
+      prefect-server:
+        condition: service_healthy  # KEY CHANGE: Wait for healthy, not just started
+    networks:
+      - app-network
+
+  webhook:
+    build:
+      context: ./webhook
+      dockerfile: dockerfile
+    container_name: flask-webhook
+    ports:
+      - "5000:5000"
+    environment:
+      - ENVIRONMENT=${ENVIRONMENT:-dev}
+      - ACCOUNT_UUID=${ACCOUNT_UUID}  
+      - MD_TOKEN=${MD_TOKEN}
+      - PREFECT_API_URL=http://prefect-server:4200/api          
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      prefect-server:
+        condition: service_healthy  # Also wait for server
+    networks:
+      - app-network
+
+  dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: dockerfile
+    container_name: streamlit-dashboard
+    ports:
+      - "8501:8501"
+    env_file:
+      - .env
+    environment:
+      - MD_TOKEN=${MD_TOKEN}
+      - ENVIRONMENT=${ENVIRONMENT:-development}
+      - TZ=UTC
+      - PYTHONUNBUFFERED=1
+      - STREAMLIT_SERVER_ADDRESS=0.0.0.0
+      - STREAMLIT_SERVER_PORT=8501
+      - STREAMLIT_SERVER_HEADLESS=true
+      - STREAMLIT_SERVER_ENABLE_CORS=false
+      - STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION=false
+      - STREAMLIT_SERVER_MAX_UPLOAD_SIZE=200
+      - STREAMLIT_SERVER_BASE_URL_PATH=${STREAMLIT_BASE_URL_PATH:-}
+      - STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
+      - STREAMLIT_BROWSER_SERVER_ADDRESS=${PUBLIC_DOMAIN:-127.0.0.1}
+      - STREAMLIT_BROWSER_SERVER_PORT=${PUBLIC_PORT:-}
+      - STREAMLIT_CLIENT_SHOW_ERROR_DETAILS=true
+      - STREAMLIT_CLIENT_TOOLBAR_MODE=minimal
+      - STREAMLIT_LOGGER_LEVEL=warning
+      - STREAMLIT_GLOBAL_DEVELOPMENT_MODE=false
+      - PREFECT_API_URL=http://prefect-server:4200/api          
+    restart: unless-stopped
+    depends_on:
+      prefect-server:
+        condition: service_healthy
+    networks:
+      - app-network
+
+volumes:
+  prefect-data:
+
+networks:
+  app-network:
+    driver: bridge

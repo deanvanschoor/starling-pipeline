@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "webhook"
+version = "0.1.9"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "duckdb>=1.4.1",
+    "flask>=3.1.2",
+    "gunicorn>=23.0.0",
+    "prefect-client>=3.6.2",
+    "pydantic>=2.12.3",
+    "python-dotenv>=1.2.1",
+]
+
+[tool.setuptools]
+packages = ["app"] 
+
+
+#[tool.setuptools.packages]
+#find = {}

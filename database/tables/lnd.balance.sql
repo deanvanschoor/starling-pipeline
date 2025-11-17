@@ -1,0 +1,17 @@
+CREATE TABLE IF NOT EXISTS lnd.balance(
+  "clearedBalance.currency" VARCHAR,
+  "clearedBalance.minorUnits" BIGINT,
+  "effectiveBalance.currency" VARCHAR,
+  "effectiveBalance.minorUnits" BIGINT,
+  "pendingTransactions.currency" VARCHAR,
+  "pendingTransactions.minorUnits" BIGINT,
+  "acceptedOverdraft.currency" VARCHAR,
+  "acceptedOverdraft.minorUnits" BIGINT,
+  "amount.currency" VARCHAR,
+  "amount.minorUnits" BIGINT,
+  "totalClearedBalance.currency" VARCHAR,
+  "totalClearedBalance.minorUnits" BIGINT,
+  "totalEffectiveBalance.currency" VARCHAR,
+  "totalEffectiveBalance.minorUnits" BIGINT,
+  received_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+);

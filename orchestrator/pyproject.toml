@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "orchestrator"
+version = "0.1.2"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "duckdb==1.4.1",
+    "duckdb-engine>=0.17.0",
+    "pandas>=2.3.2",
+    "prefect>=3.4.23",
+    "python-dateutil>=2.9.0.post0",
+    "python-dotenv>=1.1.1",
+    "requests>=2.32.5",
+    "sqlalchemy>=2.0.43",
+]
+#[tool.setuptools.packages]
+#find = {}
+
+[tool.setuptools]
+packages = ["app"] 
+#where = ["app"]  # list of folders that contain the packages (["."] by default)
+#include = ["app","tasks","flows","utils"]  # package names should match these glob patterns (["*"] by default)
+#exclude = ["my_package.tests*"]  # exclude packages matching these glob patterns (empty by default)

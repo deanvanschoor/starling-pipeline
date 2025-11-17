@@ -1,0 +1,1 @@
+CREATE OR REPLACE INDEX idx_stg_dim_date_key ON stg.dim_date(date_key);
