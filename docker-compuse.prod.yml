@@ -1,12 +1,30 @@
 services:
+  caddy:
+    image: caddy:2-alpine
+    container_name: caddy-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"  
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy-data:/data
+      - caddy-config:/config
+    environment:
+        - ACME_AGREE=true
+        - EMAIL=${EMAIL}
+    restart: unless-stopped
+    networks:
+      - app-network
+
   prefect-server:
     build:
       context: ./orchestrator
       dockerfile: dockerfile
     container_name: prefect-server
     command: uv run prefect server start --host 0.0.0.0
-    ports:
-      - "4200:4200"
+    expose:
+      - "4200"
     volumes:
       - prefect-data:/app/.prefect
     env_file:
@@ -22,7 +40,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 40s  # Give server time to start
+      start_period: 40s
     networks:
       - app-network
 
@@ -53,8 +71,8 @@ services:
       context: ./webhook
       dockerfile: dockerfile
     container_name: flask-webhook
-    ports:
-      - "5000:5000"
+    expose:
+      - "5000"
     environment:
       - ENVIRONMENT=${ENVIRONMENT:-dev}
       - ACCOUNT_UUID=${ACCOUNT_UUID}  
@@ -78,8 +96,8 @@ services:
       context: ./dashboard
       dockerfile: dockerfile
     container_name: streamlit-dashboard
-    ports:
-      - "8501:8501"
+    expose:
+      - "8501"
     env_file:
       - .env
     environment:
@@ -93,10 +111,7 @@ services:
       - STREAMLIT_SERVER_ENABLE_CORS=false
       - STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION=false
       - STREAMLIT_SERVER_MAX_UPLOAD_SIZE=200
-      - STREAMLIT_SERVER_BASE_URL_PATH=${STREAMLIT_BASE_URL_PATH:-}
       - STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
-      #- STREAMLIT_BROWSER_SERVER_ADDRESS=${PUBLIC_DOMAIN:-127.0.0.1}
-      #- STREAMLIT_BROWSER_SERVER_PORT=${PUBLIC_PORT:-}
       - STREAMLIT_CLIENT_SHOW_ERROR_DETAILS=true
       - STREAMLIT_CLIENT_TOOLBAR_MODE=minimal
       - STREAMLIT_LOGGER_LEVEL=warning
@@ -111,6 +126,8 @@ services:
 
 volumes:
   prefect-data:
+  caddy-data:
+  caddy-config:
 
 networks:
   app-network:

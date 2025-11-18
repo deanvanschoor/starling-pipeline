@@ -1,0 +1,17 @@
+# Prefect UI
+prefect.yourdomain.com {
+    reverse_proxy prefect-server:4200
+}
+
+# Flask webhook endpoint
+webhook.yourdomain.com {
+    reverse_proxy flask-webhook:5000
+}
+
+yourdomain.com/dashboard {
+    # Streamlit dashboard at root
+    reverse_proxy streamlit-dashboard:8501 {
+        header_up X-Forwarded-Proto {scheme}
+        header_up X-Forwarded-Host {host}
+    }
+}

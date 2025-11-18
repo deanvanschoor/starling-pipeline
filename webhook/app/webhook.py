@@ -119,7 +119,7 @@ def validate_webhook_auth(payload: WebhookPayload) -> bool:
         raise Unauthorized('Invalid account UID')
     return True
 
-@app.route('/webhook/feed-items', methods=['POST'])
+@app.route('/starling/feed-items', methods=['POST'])
 def receive_transaction_webhook():
     try:
         data = request.get_json()
