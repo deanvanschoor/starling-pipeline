@@ -34,6 +34,7 @@ services:
       - .env
     environment:
       - PREFECT_SERVER_API_HOST=0.0.0.0
+      - PREFECT_UI_API_URL=https://prefect.${DOMAIN}/api
       #- PREFECT_UI_API_URL=https://prefect.localhost/api
       #- PREFECT_UI_URL=http://localhost/prefect
       #- PREFECT_UI_SERVE_BASE=/prefect
