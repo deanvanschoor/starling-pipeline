@@ -7,7 +7,7 @@ load_dotenv()
 
 APP_DIR = Path(__file__).parent
 
-MOTHERDUCK_TOKEN = os.getenv('motherduck_token')
+MOTHERDUCK_TOKEN = os.getenv('MD_TOKEN')
 DATABASE = 'b_app'
 ACCOUNT_UUID = os.getenv('ACCOUNT_UUID')
 
