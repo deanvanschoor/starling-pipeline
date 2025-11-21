@@ -11,6 +11,7 @@ from app.utils.logging_config import setup_logging
 
 app = Flask(__name__)
 log = logging.getLogger(__name__)
+setup_logging()
 
 def insert_webhook_data(payload: WebhookPayload) -> bool:
     """Insert webhook payload into MotherDuck table"""
