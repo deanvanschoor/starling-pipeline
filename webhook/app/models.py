@@ -43,7 +43,7 @@ class FeedItemContent(BaseModel):
     hasAttachment: bool
     receiptPresent: bool
     feedItemFailureReason: Optional[str] = None
-    sourceUid: str
+    sourceUid: Optional[str] = None
 
 class WebhookPayload(BaseModel):
     webhookEventUid: str
