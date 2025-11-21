@@ -122,6 +122,7 @@ services:
       - STREAMLIT_CLIENT_TOOLBAR_MODE=minimal
       - STREAMLIT_LOGGER_LEVEL=warning
       - STREAMLIT_GLOBAL_DEVELOPMENT_MODE=false
+      - STREAMLIT_SERVER_BASE_URL_PATH=${STREAMLIT_BASE_URL_PATH:-}
       - PREFECT_API_URL=http://prefect-server:4200/api          
     restart: unless-stopped
     depends_on:
