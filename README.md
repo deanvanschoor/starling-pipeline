@@ -61,7 +61,7 @@ Before running the application, you'll need to set up the following:
 3. Create the required database objects:
 ```sql
    -- Connect to MotherDuck and run:
-   CREATE DATABASE IF NOT EXISTS database_name;
+   CREATE DATABASE IF NOT EXISTS b_app;
    
    -- Create your tables, views, and other objects
    -- (Refer to database folder in the project for full schema)

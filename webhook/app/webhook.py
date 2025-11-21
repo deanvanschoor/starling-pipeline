@@ -124,7 +124,7 @@ def validate_webhook_auth(payload: WebhookPayload) -> bool:
 def receive_transaction_webhook():
     try:
         data = request.get_json()
-        log.info(f"Received webhook payload: {data}")
+        #log.info(f"Received webhook payload: {data}")
         if not data:
             return jsonify({
                 'status': 'error',

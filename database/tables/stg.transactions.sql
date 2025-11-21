@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS stg.transactions
+CREATE OR REPLACE TABLE stg.transactions
     (
         transaction_id UUID PRIMARY KEY,
         space_id UUID NOT NULL,
@@ -18,5 +18,7 @@ CREATE TABLE IF NOT EXISTS stg.transactions
         data_source VARCHAR(100),
         received_at DATETIME,
         last_modified DATETIME,
-        last_modified_by VARCHAR(100)
+        last_modified_by VARCHAR(100),
+
+        FOREIGN KEY (space_id) REFERENCES stg.dim_spaces(space_id)
     );

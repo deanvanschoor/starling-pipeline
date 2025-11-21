@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS lnd.transactions_webhook (
     hasAttachment BOOLEAN NOT NULL,
     receiptPresent BOOLEAN NOT NULL,
     feedItemFailureReason VARCHAR,
-    sourceUid VARCHAR NOT NULL,
+    sourceUid VARCHAR ,
     webhookEventUid VARCHAR NOT NULL,
     eventTimestamp TIMESTAMP NOT NULL,
     accountHolderUid VARCHAR NOT NULL,
