@@ -1,4 +1,4 @@
-# Real-time(ish) Personal Finance Dashboard
+# Real-time(ish) Personal Finance Analytics Platform
 
 An application that ingests banking transactions via API and webhooks, transforms and visualises insights in an dashboard.
 

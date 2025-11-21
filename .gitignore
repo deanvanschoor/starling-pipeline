@@ -14,10 +14,9 @@ wheels/
 *.log
 
 test.curl
-
+dev.Caddyfile
+architect.excalidraw
 #streamlit
 .streamlit/
-
 /dev
-
 /ssh
