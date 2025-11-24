@@ -95,6 +95,8 @@ ACCOUNT_UUID=
 # Production Settings (optional for local development)
 EMAIL=
 DOMAIN=
+CADDY_USERNAME=
+CADDY_PASSWORD_HASH=
 ```
 
 ### Local Development
