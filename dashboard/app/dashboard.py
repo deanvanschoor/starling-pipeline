@@ -397,7 +397,8 @@ try:
     
     now = datetime.now()
     days_in_month = calendar.monthrange(now.year, now.month)[1]
-    available_budget_per_day = available_budget / days_in_month
+    days_left_in_month = days_in_month - now.day
+    available_budget_per_day = available_budget / days_left_in_month
     
     months_in_range = get_months_in_range(summary_df, start_month, end_month)
     
