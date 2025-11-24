@@ -1,3 +1,4 @@
+# Prefect UI - Protected on subdomain
 prefect.{$DOMAIN} {
     basicauth {
         {$CADDY_USERNAME} {$CADDY_PASSWORD_HASH}
@@ -5,15 +6,25 @@ prefect.{$DOMAIN} {
     reverse_proxy prefect-server:4200
 }
 
+# Flask webhook endpoint - NOT PROTECTED
 webhook.{$DOMAIN} {
     reverse_proxy flask-webhook:5000
 }
 
-dashboard.{$DOMAIN} {
-    basicauth {
-        {$CADDY_USERNAME} {$CADDY_PASSWORD_HASH}
+# Root domain with dashboard at /dashboard path - Protected
+{$DOMAIN} {
+    # Protect the dashboard path
+    handle /dashboard* {
+        basicauth {
+            {$CADDY_USERNAME} {$CADDY_PASSWORD_HASH}
+        }
+        reverse_proxy streamlit-dashboard:8501
     }
-    reverse_proxy streamlit-dashboard:8501
+    
+    # Optional: redirect root to dashboard
+    handle / {
+        redir /dashboard permanent
+    }
 }
 
 
