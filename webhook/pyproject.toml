@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "webhook"
-version = "0.1.9"
+version = "0.1.12"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -17,8 +17,14 @@ dependencies = [
     "python-dotenv>=1.2.1",
 ]
 
+
 [tool.setuptools]
-packages = ["app"] 
+packages = ["app","tests"] 
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.1",
+]
 
 
 #[tool.setuptools.packages]

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field , ConfigDict
 from datetime import datetime
 from typing import Optional
  
@@ -8,9 +8,13 @@ class Amount(BaseModel):
     currency: str
     minorUnits: int
     
+    model_config = ConfigDict(extra='allow') 
+    
 class RoundUp(BaseModel):
     goalCategoryUid: str
     amount: Amount
+    
+    model_config = ConfigDict(extra='allow') 
 
 class FeedItemContent(BaseModel):
     feedItemUid: str
@@ -22,13 +26,13 @@ class FeedItemContent(BaseModel):
     updatedAt: datetime
     transactionTime: datetime
     settlementTime: datetime
-    source: str
+    source: Optional[str] = None
     sourceSubType: Optional[str] = None
-    status: str
-    transactingApplicationUserUid: str
-    counterPartyType: str
-    counterPartyUid: str
-    counterPartyName: str
+    status: Optional[str] = None
+    transactingApplicationUserUid: Optional[str] = None
+    counterPartyType: Optional[str] = None
+    counterPartyUid: Optional[str] = None
+    counterPartyName: Optional[str] = None
     counterPartySubEntityUid: Optional[str] = None
     counterPartySubEntityName: Optional[str] = None
     counterPartySubEntityIdentifier: Optional[str] = None
@@ -44,12 +48,16 @@ class FeedItemContent(BaseModel):
     receiptPresent: bool
     feedItemFailureReason: Optional[str] = None
     sourceUid: Optional[str] = None
+    
+    model_config = ConfigDict(extra='allow')
 
 class WebhookPayload(BaseModel):
     webhookEventUid: str
     eventTimestamp: datetime
     accountHolderUid: str
     content: FeedItemContent
+    
+    model_config = ConfigDict(extra='allow') 
     
 
  
