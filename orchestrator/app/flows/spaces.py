@@ -2,7 +2,7 @@ from prefect import flow
 import logging
 
 from app.tasks.api_calls import upload_spaces, get_account_details
-from app.tasks.sql import execute_raw_sql , truncate_lnd_spaces , truncate_stg_spaces, insert_spaces_to_staging
+from app.tasks.sql import execute_raw_sql, execute_transaction, truncate_lnd_spaces , truncate_stg_spaces, insert_spaces_to_staging
 
 logger = logging.getLogger(__name__)
 
@@ -14,8 +14,10 @@ def refresh_lnd_spaces():
     
 @flow(name="insert-spaces-to-staging", log_prints=True, description="Insert spaces from landing to staging Table",timeout_seconds=180)
 def insert_to_spaces_staging():
-    execute_raw_sql(truncate_stg_spaces, label="Truncate Staging Transactions Table")
-    execute_raw_sql(insert_spaces_to_staging, label="Insert spaces to staging from landing")
+    execute_transaction([
+        (truncate_stg_spaces , "truncate stg.spaces "),
+        (insert_spaces_to_staging, "insert spaces to staging from landing")
+    ], label="spaces to staging table")
     
 @flow(name="pipe-spaces-lnd-to-stg", log_prints=True, description="Pipeline: spaces from lnd to stg",timeout_seconds=360)    
 def spaces_dag():

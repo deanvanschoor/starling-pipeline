@@ -14,6 +14,13 @@ logger = logging.getLogger(__name__)
 
 @task(cache_policy=NO_CACHE,task_run_name="execute_raw_sql-{label}")
 def execute_raw_sql(sql: str, label: Optional[str] = None) -> None:
+    """
+    Execute single SQL statement.
+    
+    Args:
+        sql_statements: List of tuples (sql, description)
+        label: Label for logging
+    """
     engine = get_md_engine()
     try:
         with engine.begin() as connection:  # begin a transaction and auto-commit
@@ -49,54 +56,6 @@ def execute_transaction(sql_statements: list[tuple[str, str]], label: Optional[s
         logger.error(f"Transaction failed and rolled back: {label} - Error: {e}")
         raise
 
-create_lnd_schema = f"""
-    CREATE SCHEMA IF NOT EXISTS {LANDING_SCHEMA};
-"""
-create_lnd_transactions_api_pull = f"""
-    CREATE TABLE IF NOT EXISTS {LANDING_SCHEMA}.{TRANSACTIONS_LANDING_TABLE}
-    (
-      feedItemUid VARCHAR,
-      categoryUid VARCHAR,
-      direction VARCHAR,
-      updatedAt VARCHAR,
-      transactionTime VARCHAR,
-      settlementTime VARCHAR,
-      source VARCHAR,
-      sourceSubType VARCHAR,
-      status VARCHAR,
-      transactingApplicationUserUid VARCHAR,
-      counterPartyType VARCHAR,
-      counterPartyUid VARCHAR,
-      counterPartyName VARCHAR,
-      counterPartySubEntityUid VARCHAR,
-      reference VARCHAR,
-      country VARCHAR,
-      spendingCategory VARCHAR,
-      userNote VARCHAR,
-      hasAttachment BOOLEAN,
-      hasReceipt BOOLEAN,
-      batchPaymentDetails VARCHAR,
-      "amount.currency" VARCHAR,
-      "amount.minorUnits" BIGINT,
-      "sourceAmount.currency" VARCHAR,
-      "sourceAmount.minorUnits" BIGINT,
-      counterPartySubEntityName VARCHAR,
-      counterPartySubEntityIdentifier VARCHAR,
-      counterPartySubEntitySubIdentifier VARCHAR,
-      received_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
-    );
-"""
-create_lnd_spaces = f"""
-    CREATE TABLE IF NOT EXISTS {LANDING_SCHEMA}.{SPACES_LANDING_TABLE}(
-      savingsGoalUid VARCHAR,
-      "name" VARCHAR,
-      sortOrder BIGINT,
-      state VARCHAR,
-      "totalSaved.currency" VARCHAR,
-      "totalSaved.minorUnits" BIGINT,
-      received_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
-    );
-"""
 truncate_lnd_transactions = f"""
     TRUNCATE TABLE {LANDING_SCHEMA}.{TRANSACTIONS_LANDING_TABLE};
 """
@@ -106,49 +65,11 @@ truncate_lnd_spaces = f"""
 truncate_lnd_balance = f"""
     TRUNCATE TABLE {LANDING_SCHEMA}.{BALANCE_LANDING_TABLE};
 """
-create_stg_schema = f"""
-    CREATE SCHEMA IF NOT EXISTS {STAGING_SCHEMA};
-"""
 truncate_stg_transactions = f"""
     TRUNCATE TABLE {STAGING_SCHEMA}.{TRANSACTIONS_STAGING_TABLE};
 """
-create_stg_transactions = f"""
-    CREATE TABLE IF NOT EXISTS {STAGING_SCHEMA}.{TRANSACTIONS_STAGING_TABLE}
-    (
-        transaction_id UUID PRIMARY KEY,
-        space_id UUID NOT NULL,
-        in_or_out VARCHAR(10) NOT NULL,
-        updated_at DATETIME ,
-        transaction_time DATETIME NOT NULL,
-        source_type NVARCHAR(200),
-        counter_party_type NVARCHAR(250),
-        counter_party_name NVARCHAR(250),
-        reference NVARCHAR(250),
-        country NVARCHAR(100),
-        spending_category NVARCHAR(100),
-        currency VARCHAR(10),
-        amount DECIMAL(10,2),
-        user_note VARCHAR(250),
-        data_source VARCHAR(100),
-        received_at DATETIME,
-        last_modified DATETIME,
-        last_modified_by VARCHAR(100)
-    );
-"""
-
 truncate_stg_spaces = f"""
     TRUNCATE TABLE {STAGING_SCHEMA}.{SPACES_STAGING_TABLE};
-"""
-
-create_stg_transactions = f"""
-    CREATE TABLE IF NOT EXISTS {STAGING_SCHEMA}.{SPACES_STAGING_TABLE} 
-    (
-        space_uuid UUID PRIMARY KEY,
-        space_name VARCHAR,
-        amount DECIMAL(10,2), 
-        received_at DATETIME,
-        last_modified DATETIME,
-    );
 """
 insert_transactions_to_staging = f"""
     INSERT INTO {STAGING_SCHEMA}.{TRANSACTIONS_STAGING_TABLE} (

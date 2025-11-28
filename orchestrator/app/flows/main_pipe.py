@@ -48,13 +48,11 @@ if __name__ == "__main__":
             tags=["banking-app", "dev"],
             description="Main pipeline to orchestrate transactions, balance, and spaces dags",
             version="1.0.0",
-            concurrency_limit=1,
             )
     webhook = webhook_pipeline.to_deployment(
             name="webhook-pipeline",
             tags=["banking-app", "dev"],
             description="webhook pipeline to orchestrate webhook transactions, balance, and spaces dags",
             version="1.0.0",
-            concurrency_limit=1,
             )
     serve(main, webhook)
