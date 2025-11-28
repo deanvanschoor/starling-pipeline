@@ -115,6 +115,8 @@ docker-compose up -d
 
 ### Production Deployment
 ```bash
+# Create hash for CADDY_PASSWORD_HASH, replace 'yourpassword' with desired password
+docker run --rm caddy:2-alpine caddy hash-password --plaintext 'yourpassword'
 # Use production compose file
 docker-compose -f docker-compose.prod.yml up -d
 
@@ -124,5 +126,6 @@ docker-compose -f docker-compose.prod.yml up -d
 # - Webhook: https://webhook.yourdomain.com/starling/feed-items
 
 # Ensure your Starling webhook is configured to use the production webhook URL
+
 ```
 
