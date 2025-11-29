@@ -93,7 +93,7 @@ services:
       - STREAMLIT_SERVER_ENABLE_CORS=false
       - STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION=false
       - STREAMLIT_SERVER_MAX_UPLOAD_SIZE=200
-      - STREAMLIT_SERVER_BASE_URL_PATH=${STREAMLIT_BASE_URL_PATH:-}
+      - STREAMLIT_SERVER_BASE_URL_PATH=${STREAMLIT_BASE_URL_PATH:/dashboard}
       - STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
       #- STREAMLIT_BROWSER_SERVER_ADDRESS=${PUBLIC_DOMAIN:-127.0.0.1}
       #- STREAMLIT_BROWSER_SERVER_PORT=${PUBLIC_PORT:-}
@@ -103,6 +103,12 @@ services:
       - STREAMLIT_GLOBAL_DEVELOPMENT_MODE=false
       - PREFECT_API_URL=http://prefect-server:4200/api          
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     depends_on:
       prefect-server:
         condition: service_healthy
