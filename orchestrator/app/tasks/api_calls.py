@@ -10,8 +10,7 @@ from prefect import task, flow
 
 from app.constants import get_md_engine
 from app.constants import LANDING_SCHEMA, TRANSACTIONS_LANDING_TABLE ,STARLING_TOKEN ,SPACES_LANDING_TABLE, BALANCE_LANDING_TABLE
-from app.tasks.sql import execute_raw_sql , create_lnd_schema, create_lnd_transactions_api_pull, truncate_lnd_transactions , truncate_lnd_spaces
-# Replace with your actual personal access token
+from app.tasks.sql import execute_raw_sql, truncate_lnd_transactions , truncate_lnd_spaces
 
 logger = logging.getLogger(__name__)
 
@@ -195,21 +194,6 @@ def upload_balance(account_uid: str):
     except Exception as e:
         logger.error(f"Error uploading balance: {e}")
         raise
-
-#def refresh_lnd_spaces():
-#    account_uid = get_account_details('accountUid')
-#    execute_raw_sql(truncate_lnd_spaces, label="Trunacate Landing Spaces")
-#    upload_spaces(account_uid)
-    
-
-#@flow(name="refresh-landing-transactions", log_prints=True, description="Full refresh of landing transactions Table via api call")            
-#def refresh_lnd_transactions():
-#    execute_raw_sql(create_lnd_schema, label="Create Landing Schema")
-#    execute_raw_sql(create_lnd_transactions_api_pull, label="Create Landing Transactions API Pull Table")
-#    execute_raw_sql(truncate_lnd_transactions, label="Truncate Landing Transactions Table")
-#    account_uid = get_account_details('accountUid')
-#    upload_13m_transactions(account_uid)
-#
 
 if __name__ == "__main__":
     #from app.utils.logging_config import setup_logging
