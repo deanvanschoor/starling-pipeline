@@ -14,10 +14,10 @@ services:
       - .env
     environment:
         - ACME_AGREE=true
-        #- EMAIL=${EMAIL}
-        #- DOMAIN=${DOMAIN}
-        #- CADDY_USERNAME=${CADDY_USERNAME}
-        #- CADDY_PASSWORD_HASH=${CADDY_PASSWORD_HASH}
+        - EMAIL=${EMAIL}
+        - DOMAIN=${DOMAIN}
+        - CADDY_USERNAME=${CADDY_USERNAME}
+        - CADDY_PASSWORD_HASH=${CADDY_PASSWORD_HASH}
     restart: unless-stopped
     networks:
       - app-network

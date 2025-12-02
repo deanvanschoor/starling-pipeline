@@ -20,26 +20,32 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ vars.VPS_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Connect to VPS 
+      - name: Deploy Application
         run: |
-          ssh ${{ vars.VPS_USERNAME }}@${{ vars.VPS_HOST }} "echo 'SSH connection successful'"
-      
-      - name: Pull lastest code
-        run: |
-          ssh ${{ vars.VPS_USERNAME }}@${{ vars.VPS_HOST }} "cd ${{ vars.APP_PATH }} && git pull origin main"
+          ssh ${{ vars.VPS_USERNAME }}@${{ vars.VPS_HOST }} << 'EOF'
+            # Navigate to app directory
+            cd ${{ vars.APP_PATH }}
+            
+            # Pull latest code
+            git pull origin main
+            git checkout main
+            
+            # Stop containers
+            docker compose -f docker-compose.prod.yml down
+            
+            # Set environment variables
+            MD_TOKEN="${{ secrets.MD_TOKEN }}" \
+            STARLING_TOKEN="${{ secrets.STARLING_TOKEN }}" \
+            ACCOUNT_UUID="${{ vars.ACCOUNT_UUID }}" \
+            EMAIL="${{ vars.EMAIL }}" \
+            DOMAIN="${{ vars.DOMAIN }}" \
+            CADDY_USERNAME="${{ vars.CADDY_USERNAME }}" \
+            CADDY_PASSWORD_HASH="${{ secrets.CADDY_PASSWORD_HASH }}" \
+            
+            # Start containers
+            docker compose -f docker-compose.prod.yml up -d --build
+          EOF
 
-      - name: Checkout main branch
-        run: |
-          ssh ${{ vars.VPS_USERNAME }}@${{ vars.VPS_HOST }} "cd ${{ vars.APP_PATH }} && git checkout main"
-
-      - name: Stop containers 
-        run: |
-          ssh ${{ vars.VPS_USERNAME }}@${{ vars.VPS_HOST }} "cd ${{ vars.APP_PATH }} && docker compose -f docker-compose.prod.yml down"
-
-      - name: Build and start containers
-        run: |
-          ssh ${{ vars.VPS_USERNAME }}@${{ vars.VPS_HOST }} "cd ${{ vars.APP_PATH }} && docker compose -f docker-compose.prod.yml up -d --build"
-
-
-      
-
+      - name: Cleanup
+        if: always()
+        run: rm -f ~/.ssh/id_rsa
