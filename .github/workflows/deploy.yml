@@ -34,7 +34,7 @@ jobs:
 
       - name: Deploy and Update Environment
         run: |
-          ssh ${{ vars.VPS_USERNAME }}@${{ secrets.VPS_HOST }} << 'EOF'
+          ssh ${{ vars.VPS_USERNAME }}@${{ vars.VPS_HOST }} << 'EOF'
             export MD_TOKEN="${{ secrets.MD_TOKEN }}" \
             export STARLING_TOKEN="${{ secrets.STARLING_TOKEN }}" \
             export ACCOUNT_UUID="${{ vars.ACCOUNT_UUID }}" \
