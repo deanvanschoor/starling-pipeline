@@ -10,8 +10,8 @@ services:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy-data:/data
       - caddy-config:/config
-    env_file:
-      - .env
+    #env_file:
+    #  - .env
     environment:
         - ACME_AGREE=true
         - EMAIL=${EMAIL}
@@ -32,8 +32,8 @@ services:
       - "4200"
     volumes:
       - prefect-data:/app/.prefect
-    env_file:
-      - .env
+    #env_file:
+    #  - .env
     environment:
       - PREFECT_SERVER_API_HOST=0.0.0.0
       - PREFECT_UI_API_URL=https://prefect.${DOMAIN}/api
@@ -61,8 +61,8 @@ services:
     command: uv run prefect worker start --pool default-agent-pool --type process
     volumes:
       - prefect-data:/app/.prefect
-    env_file:
-      - .env
+    #env_file:
+    #  - .env
     environment:
       - PREFECT_API_URL=http://prefect-server:4200/api
       - PREFECT_HOME=/app/.prefect
@@ -107,8 +107,8 @@ services:
     container_name: streamlit-dashboard
     expose:
       - "8501"
-    env_file:
-      - .env
+    #env_file:
+    #  - .env
     environment:
       - MD_TOKEN=${MD_TOKEN}
       - ENVIRONMENT=${ENVIRONMENT:-development}
