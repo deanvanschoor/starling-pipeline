@@ -20,28 +20,37 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ vars.VPS_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Deploy Application
+      - name: Connect to VPS 
         run: |
-          ssh ${{ vars.VPS_USERNAME }}@${{ vars.VPS_HOST }} << EOF
-            sudo bash -c 'cat > /etc/environment <<EOT
-          MD_TOKEN="${{ secrets.MD_TOKEN }}"
-          STARLING_TOKEN="${{ secrets.STARLING_TOKEN }}"
-          ACCOUNT_UUID="${{ vars.ACCOUNT_UUID }}"
-          EMAIL="${{ vars.EMAIL }}"
-          DOMAIN="${{ vars.DOMAIN }}"
-          CADDY_USERNAME="${{ vars.CADDY_USERNAME }}"
-          CADDY_PASSWORD_HASH="${{ secrets.CADDY_PASSWORD_HASH }}"
-          EOT'
-          
-            # Reload environment variables
-            source /etc/environment
-          
-            # Redeploy service
-            cd ${{ vars.APP_PATH }}
-            git pull origin main
-            docker compose -f docker-compose.prod.yml down
-            docker compose -f docker-compose.prod.yml up -d --build
+          ssh ${{ vars.VPS_USERNAME }}@${{ vars.VPS_HOST }} "echo 'SSH connection successful'"
+      
+      - name: Pull lastest code
+        run: |
+          ssh ${{ vars.VPS_USERNAME }}@${{ vars.VPS_HOST }} "cd ${{ vars.APP_PATH }} && git pull origin main"
+
+      - name: Checkout main branch
+        run: |
+          ssh ${{ vars.VPS_USERNAME }}@${{ vars.VPS_HOST }} "cd ${{ vars.APP_PATH }} && git checkout main"
+
+      - name: Deploy and Update Environment
+        run: |
+          ssh ${{ vars.VPS_USERNAME }}@${{ secrets.VPS_HOST }} << 'EOF'
+            export MD_TOKEN="${{ secrets.MD_TOKEN }}" \
+            export STARLING_TOKEN="${{ secrets.STARLING_TOKEN }}" \
+            export ACCOUNT_UUID="${{ vars.ACCOUNT_UUID }}" \
+            export EMAIL="${{ vars.EMAIL }}" \
+            export DOMAIN"${{ vars.DOMAIN}}" \
+            export CADDY_USERNAME"${{ vars.CADDY_USERNAME}}" \
+            export CADDY_PASSWORD_HASH"${{ secrets.CADDY_PASSWORD_HASH}}" \
           EOF
+
+      - name: Stop containers 
+        run: |
+          ssh ${{ vars.VPS_USERNAME }}@${{ vars.VPS_HOST }} "cd ${{ vars.APP_PATH }} && docker compose -f docker-compose.prod.yml down"
+
+      - name: Build and start containers
+        run: |
+          ssh ${{ vars.VPS_USERNAME }}@${{ vars.VPS_HOST }} "cd ${{ vars.APP_PATH }} && docker compose -f docker-compose.prod.yml up -d --build"
           
       - name: Cleanup
         if: always()
