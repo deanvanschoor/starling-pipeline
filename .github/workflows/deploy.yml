@@ -1,0 +1,45 @@
+name: Deploy Project
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ vars.VPS_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Connect to VPS 
+        run: |
+          ssh ${{ vars.VPS_USERNAME }}@${{ vars.VPS_HOST }} "echo 'SSH connection successful'"
+      
+      - name: Pull lastest code
+        run: |
+          ssh ${{ vars.VPS_USERNAME }}@${{ vars.VPS_HOST }} "cd ${{ vars.APP_PATH }} && git pull origin main"
+
+      - name: Checkout main branch
+        run: |
+          ssh ${{ vars.VPS_USERNAME }}@${{ vars.VPS_HOST }} "cd ${{ vars.APP_PATH }} && git checkout main"
+
+      - name: Stop containers 
+        run: |
+          ssh ${{ vars.VPS_USERNAME }}@${{ vars.VPS_HOST }} "cd ${{ vars.APP_PATH }} && docker compose -f docker-compose.prod.yml down"
+
+      - name: Build and start containers
+        run: |
+          ssh ${{ vars.VPS_USERNAME }}@${{ vars.VPS_HOST }} "cd ${{ vars.APP_PATH }} && docker compose -f docker-compose.prod.yml up -d --build"
+
+
+      
+
