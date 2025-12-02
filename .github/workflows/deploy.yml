@@ -39,9 +39,9 @@ jobs:
             export STARLING_TOKEN="${{ secrets.STARLING_TOKEN }}" \
             export ACCOUNT_UUID="${{ vars.ACCOUNT_UUID }}" \
             export EMAIL="${{ vars.EMAIL }}" \
-            export DOMAIN"${{ vars.DOMAIN}}" \
-            export CADDY_USERNAME"${{ vars.CADDY_USERNAME}}" \
-            export CADDY_PASSWORD_HASH"${{ secrets.CADDY_PASSWORD_HASH}}" \
+            export DOMAIN"=${{ vars.DOMAIN}}" \
+            export CADDY_USERNAME"=${{ vars.CADDY_USERNAME}}" \
+            export CADDY_PASSWORD_HASH"=${{ secrets.CADDY_PASSWORD_HASH}}" \
           EOF
 
       - name: Stop containers 
