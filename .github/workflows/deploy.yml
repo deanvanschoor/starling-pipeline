@@ -41,7 +41,7 @@ jobs:
             export EMAIL='${{ vars.EMAIL }}' \
             export DOMAIN='${{ vars.DOMAIN}}' \
             export CADDY_USERNAME='${{ vars.CADDY_USERNAME}}' \
-            echo CADDY_PASSWORD_HASH='${{ secrets.CADDY_PASSWORD_HASH}}' \
+            export CADDY_PASSWORD_HASH='${{ secrets.CADDY_PASSWORD_HASH}}' \
           EOF
 
       - name: Stop containers 
