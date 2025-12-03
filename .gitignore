@@ -20,3 +20,5 @@ architect.excalidraw
 .streamlit/
 /dev
 /ssh
+.secrets
+.vars

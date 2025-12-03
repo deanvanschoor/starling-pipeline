@@ -8,8 +8,8 @@ import calendar
 import time
 import logging
 
-from poll import poll_for_pipeline_run
-from constants import get_md_connection
+from app.poll import poll_for_pipeline_run
+from app.constants import get_md_connection
 from app.utils.logging_config import setup_logging
 
 # ==============================================================================
@@ -282,6 +282,18 @@ def format_month(month_str: str) -> str:
     dt = datetime.strptime(month_str, '%Y-%m')
     return dt.strftime('%b %Y')
 
+def days_left_in_month_func() -> int:
+    now = datetime.now()
+    days_in_month = calendar.monthrange(now.year, now.month)[1]
+    days_left = days_in_month - now.day
+    
+    if days_left == 0:
+        next_month_start = now.replace(day=1) + timedelta(days=days_in_month)
+        days_in_next_month = calendar.monthrange(next_month_start.year, next_month_start.month)[1]
+        return days_in_next_month
+    else:
+        return days_left
+
 # ==============================================================================
 # AUTO-REFRESH POLLING
 # ==============================================================================
@@ -395,9 +407,9 @@ try:
     total_spending = filtered_df['total_amount'].sum()
     available_budget = available_df['available_budget'].sum()
     
-    now = datetime.now()
-    days_in_month = calendar.monthrange(now.year, now.month)[1]
-    days_left_in_month = days_in_month - now.day
+    #now = datetime.now()
+    #days_in_month = calendar.monthrange(now.year, now.month)[1]
+    days_left_in_month = days_left_in_month_func()
     available_budget_per_day = available_budget / days_left_in_month
     
     months_in_range = get_months_in_range(summary_df, start_month, end_month)
