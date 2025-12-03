@@ -35,13 +35,16 @@ jobs:
       - name: Deploy and Update Environment
         run: |
           ssh ${{ vars.VPS_USERNAME }}@${{ vars.VPS_HOST }} << 'EOF'
-            export MD_TOKEN='${{ secrets.MD_TOKEN }}' \
-            export STARLING_TOKEN='${{ secrets.STARLING_TOKEN }}' \
-            export ACCOUNT_UUID='${{ vars.ACCOUNT_UUID }}' \
-            export EMAIL='${{ vars.EMAIL }}' \
-            export DOMAIN='${{ vars.DOMAIN}}' \
-            export CADDY_USERNAME='${{ vars.CADDY_USERNAME}}' \
-            export CADDY_PASSWORD_HASH='${{ secrets.CADDY_PASSWORD_HASH}}' \
+            cd ${{ vars.APP_PATH }}
+            cat > .env << 'ENVFILE'
+            MD_TOKEN=${{ secrets.MD_TOKEN }}
+            STARLING_TOKEN=${{ secrets.STARLING_TOKEN }}
+            ACCOUNT_UUID=${{ vars.ACCOUNT_UUID }}
+            EMAIL=${{ vars.EMAIL }}
+            DOMAIN=${{ vars.DOMAIN }}
+            CADDY_USERNAME=${{ vars.CADDY_USERNAME }}
+            CADDY_PASSWORD_HASH=${{ secrets.CADDY_PASSWORD_HASH }}
+            ENVFILE
           EOF
 
       - name: Stop containers 
