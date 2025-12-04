@@ -54,6 +54,21 @@ jobs:
       - name: Build and start containers
         run: |
           ssh ${{ vars.VPS_USERNAME }}@${{ vars.VPS_HOST }} "cd ${{ vars.APP_PATH }} && docker compose -f docker-compose.prod.yml up -d --build"
+
+      - name: Wait for Prefect server container to be healthy
+        run: |
+          ssh ${{ vars.VPS_USERNAME }}@${{ vars.VPS_HOST }} << 'EOF'
+            echo "Waiting for prefect-server to be healthy..."
+            timeout 120 bash -c 'until [ "$(docker inspect --format="{{.State.Health.Status}}" prefect-server 2>/dev/null)" == "healthy" ]; do
+              echo "Still waiting..."
+              sleep 5
+            done'
+            echo "prefect-server is healthy"
+          EOF
+
+      - name: Deploy Prefect flow
+        run: |
+          ssh ${{ vars.VPS_USERNAME }}@${{ vars.VPS_HOST }} "docker exec -d prefect-server uv run app/flows/main_pipe.py"
           
       - name: Cleanup
         if: always()
