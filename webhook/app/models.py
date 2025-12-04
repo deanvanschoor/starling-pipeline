@@ -18,14 +18,14 @@ class RoundUp(BaseModel):
 
 class FeedItemContent(BaseModel):
     feedItemUid: str
-    categoryUid: str
-    accountUid: str
-    amount: Amount
-    sourceAmount: Amount
-    direction: str
-    updatedAt: datetime
-    transactionTime: datetime
-    settlementTime: datetime
+    categoryUid: Optional[str] = None
+    accountUid: Optional[str] = None
+    amount: Optional[Amount] = None
+    sourceAmount: Optional[Amount] = None
+    direction: Optional[str] = None
+    updatedAt: Optional[datetime] = None
+    transactionTime: Optional[datetime] = None
+    settlementTime: Optional[datetime] = None
     source: Optional[str] = None
     sourceSubType: Optional[str] = None
     status: Optional[str] = None
