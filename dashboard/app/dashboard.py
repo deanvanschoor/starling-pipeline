@@ -420,28 +420,6 @@ except Exception as e:
     st.exception(e)
     st.stop()
 
-
-# A simple text block
-st.markdown("""
-## SQL Server Index Types
-
-There are two main types of indexes in SQL Server:
-
-**Clustered Index**
-- Physically reorders the table data to match the index
-- Only one per table (since data can only be sorted one way)
-- The leaf nodes contain the actual data rows
-
-**Non-Clustered Index**
-- Creates a separate structure with pointers to the data
-- Can have multiple per table (up to 999)
-- Leaf nodes contain index keys plus a row locator
-""")
-
-
-
-
-
 # ==============================================================================
 # METRICS DISPLAY
 # ==============================================================================
