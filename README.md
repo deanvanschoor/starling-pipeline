@@ -1,17 +1,9 @@
-# Real-time(ish) Personal Finance Analytics Platform
+# Event Driven Personal Finance Analytics Platform
 
-An application that ingests banking transactions via API and webhooks, transforms and visualises insights in an dashboard.
+An event driven application that ingests banking transactions via API and webhooks, transforms and visualises insights in an dashboard.
 
 ## Pipeline Architecture
-```
-Starling API + Webhooks
-           ↓
-    Prefect Pipelines
-           ↓
-MotherDuck (Landing → Staging → Semantic)
-           ↓
-   Streamlit Dashboard
-```
+![Diagram](./architecture.png)
 
 ## Structure
 
