@@ -1,6 +1,6 @@
 # Event Driven Personal Finance Analytics Platform
 
-An event driven application that ingests banking transactions via API and webhooks, transforms and visualises insights in an dashboard.
+A personal finance platform that ingests Starling Bank transactions in real-time via webhooks and API, then transforms and visualises spending insights.
 
 ## Pipeline Architecture
 ![Diagram](./architecture.png)
